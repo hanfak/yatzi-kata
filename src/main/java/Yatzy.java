@@ -2,6 +2,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static java.util.Map.Entry.comparingByKey;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
@@ -64,26 +65,13 @@ public class Yatzy {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
     Map<Integer, Long> countOfEachDieScore = diceScores.stream()
             .collect(groupingBy(identity(), counting()));
-    Predicate<Map.Entry<Integer, Long>> twoDiceWtihSameScore = diceScoreCount -> diceScoreCount.getValue().equals(2L);
-    return  countOfEachDieScore.entrySet().stream()
-            .filter(twoDiceWtihSameScore)
-            .max(Map.Entry.comparingByKey()) // Can use filter to get highest pair
-            .map(y -> y.getKey() * 2)
-            .orElse(0); // Not tested, no rules for this, this is assumption
+    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().equals(2L);
+    return countOfEachDieScore.entrySet().stream()
+            .filter(twoDiceWithSameScore)
+            .max(comparingByKey())
+            .map(Yatzy::calculateTotalScore)
+            .orElse(0); // Not tested, no rules for this, this is assumption, but in prior code it returns 0
   }
-
-
-//    int[] counts = new int[6];
-//    counts[d1 - 1]++;
-//    counts[d2 - 1]++;
-//    counts[d3 - 1]++;
-//    counts[d4 - 1]++;
-//    counts[d5 - 1]++;
-//    int at;
-//    for (at = 0; at != 6; at++)
-//      if (counts[6 - at - 1] >= 2)
-//        return (6 - at) * 2;
-//    return 0;
 
   public static int two_pair(int d1, int d2, int d3, int d4, int d5) {
     int[] counts = new int[6];
@@ -205,5 +193,9 @@ public class Yatzy {
     return diceScores.stream()
             .filter(score::equals)
             .reduce(0, Integer::sum);
+  }
+
+  private static int calculateTotalScore(Map.Entry<Integer, Long> dieScoreByCount) {
+    return dieScoreByCount.getKey() * 2;
   }
 }
