@@ -66,9 +66,10 @@ public class Yatzy {
     Map<Integer, Long> countOfEachDieScore = diceScores.stream()
             .collect(groupingBy(identity(), counting()));
     Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().equals(2L);
+    Comparator<Map.Entry<Integer, Long>> dieScorePair = comparingByKey();
     return countOfEachDieScore.entrySet().stream()
             .filter(twoDiceWithSameScore)
-            .max(comparingByKey())
+            .max(dieScorePair)
             .map(Yatzy::calculateTotalScore)
             .orElse(0); // Not tested, no rules for this, this is assumption, but in prior code it returns 0
   }
