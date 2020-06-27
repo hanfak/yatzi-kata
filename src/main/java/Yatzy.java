@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 // I am keeping the api of the methods the same, would use an interface but we have  static methods, avoids breaking backwards compatibility of existing users
 public class Yatzy {
@@ -49,31 +50,18 @@ public class Yatzy {
   }
 
   public int fours() {
-    int sum;
-    sum = 0;
-    for (int at = 0; at != 5; at++) {
-      if (dice[at] == 4) {
-        sum += 4;
-      }
-    }
-    return sum;
+    List<Integer> diceScores = Arrays.stream(dice).boxed().collect(toList());
+    return sumOfDieWithScore(4, diceScores);
   }
 
   public int fives() {
-    int s = 0;
-    int i;
-    for (i = 0; i < dice.length; i++)
-      if (dice[i] == 5)
-        s = s + 5;
-    return s;
+    List<Integer> diceScores = Arrays.stream(dice).boxed().collect(toList());
+    return sumOfDieWithScore(5, diceScores);
   }
 
   public int sixes() {
-    int sum = 0;
-    for (int at = 0; at < dice.length; at++)
-      if (dice[at] == 6)
-        sum = sum + 6;
-    return sum;
+    List<Integer> diceScores = Arrays.stream(dice).boxed().collect(toList());
+    return sumOfDieWithScore(6, diceScores);
   }
 
   public static int score_pair(int d1, int d2, int d3, int d4, int d5) {
