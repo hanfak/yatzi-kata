@@ -1,7 +1,9 @@
+import java.util.HashSet;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
+// I am keeping the api of the methods the same, would use an interface but we have  static methods, avoids breaking backwards compatibility of existing users
 public class Yatzy {
 
   public static int chance(int dice1, int dice2, int dice3, int dice4, int dice5) {
@@ -10,9 +12,8 @@ public class Yatzy {
 
   public static int yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> dice = asList(dice1, dice2, dice3, dice4, dice5);
-
-    long numberOfDistinctDieScores = dice.stream().distinct().count();
-    if (numberOfDistinctDieScores == 1L) {
+    HashSet<Integer> uniqueDice = new HashSet<>(dice);
+    if (uniqueDice.size() == 1L) {
       return 50;
     }
     return 0;
