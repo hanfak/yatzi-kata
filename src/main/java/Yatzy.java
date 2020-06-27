@@ -1,7 +1,7 @@
 public class Yatzy {
 
-  public static int chance(int d1, int d2, int d3, int d4, int d5) {
-    return d1 + d2 + d3 + d4 + d5;
+  public static int chance(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    return dice1 + dice2 + dice3 + dice4 + dice5;
   }
 
   public static int yatzy(int... dice) {
