@@ -32,15 +32,10 @@ public class Yatzy {
             .reduce(0, Integer::sum);
   }
 
-  public static int threes(int d1, int d2, int d3, int d4, int d5) {
-    int s;
-    s = 0;
-    if (d1 == 3) s += 3;
-    if (d2 == 3) s += 3;
-    if (d3 == 3) s += 3;
-    if (d4 == 3) s += 3;
-    if (d5 == 3) s += 3;
-    return s;
+  public static int threes(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    return Stream.of(dice1, dice2, dice3, dice4, dice5)
+            .filter(dieScore -> dieScore.equals(3))
+            .reduce(0, Integer::sum);
   }
 
   protected int[] dice;
