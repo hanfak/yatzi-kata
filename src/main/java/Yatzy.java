@@ -64,12 +64,12 @@ public class Yatzy {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
     Map<Integer, Long> countOfEachDieScore = diceScores.stream()
             .collect(groupingBy(identity(), counting()));
-    Predicate<Map.Entry<Integer, Long>> twoDiceWtihSameScore = x -> x.getValue().equals(2L);
+    Predicate<Map.Entry<Integer, Long>> twoDiceWtihSameScore = diceScoreCount -> diceScoreCount.getValue().equals(2L);
     return  countOfEachDieScore.entrySet().stream()
             .filter(twoDiceWtihSameScore)
-            .max((x1, x2) -> x1.getKey().compareTo(x2.getKey()))
+            .max(Map.Entry.comparingByKey()) // Can use filter to get highest pair
             .map(y -> y.getKey() * 2)
-            .orElse(0);
+            .orElse(0); // Not tested, no rules for this, this is assumption
   }
 
 
