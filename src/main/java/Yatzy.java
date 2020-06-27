@@ -13,12 +13,7 @@ public class Yatzy {
   private final int[] diceScorces;
 
   public Yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
-    this.diceScorces = new int[5];
-    this.diceScorces[0] = dice1;
-    this.diceScorces[1] = dice2;
-    this.diceScorces[2] = dice3;
-    this.diceScorces[3] = dice4;
-    this.diceScorces[4] = dice5;
+    this.diceScorces = new int[]{dice1, dice2, dice3, dice4, dice5};
   }
 
   public static int chance(int dice1, int dice2, int dice3, int dice4, int dice5) {
