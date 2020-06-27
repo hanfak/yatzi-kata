@@ -10,6 +10,17 @@ import static java.util.stream.Collectors.toList;
 // I am keeping the api of the methods the same, would use an interface but we have  static methods, avoids breaking backwards compatibility of existing users
 public class Yatzy {
 
+  private final int[] diceScorces;
+
+  public Yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    this.diceScorces = new int[5];
+    this.diceScorces[0] = dice1;
+    this.diceScorces[1] = dice2;
+    this.diceScorces[2] = dice3;
+    this.diceScorces[3] = dice4;
+    this.diceScorces[4] = dice5;
+  }
+
   public static int chance(int dice1, int dice2, int dice3, int dice4, int dice5) {
     return dice1 + dice2 + dice3 + dice4 + dice5;
   }
@@ -38,29 +49,18 @@ public class Yatzy {
     return sumOfDieWithScore(3, diceScores);
   }
 
-  protected int[] dice;
-
-  public Yatzy(int d1, int d2, int d3, int d4, int _5) {
-    dice = new int[5];
-    dice[0] = d1;
-    dice[1] = d2;
-    dice[2] = d3;
-    dice[3] = d4;
-    dice[4] = _5;
-  }
-
   public int fours() {
-    List<Integer> diceScores = Arrays.stream(dice).boxed().collect(toList());
+    List<Integer> diceScores = Arrays.stream(this.diceScorces).boxed().collect(toList());
     return sumOfDieWithScore(4, diceScores);
   }
 
   public int fives() {
-    List<Integer> diceScores = Arrays.stream(dice).boxed().collect(toList());
+    List<Integer> diceScores = Arrays.stream(this.diceScorces).boxed().collect(toList());
     return sumOfDieWithScore(5, diceScores);
   }
 
   public int sixes() {
-    List<Integer> diceScores = Arrays.stream(dice).boxed().collect(toList());
+    List<Integer> diceScores = Arrays.stream(this.diceScorces).boxed().collect(toList());
     return sumOfDieWithScore(6, diceScores);
   }
 
