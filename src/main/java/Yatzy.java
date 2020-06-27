@@ -1,10 +1,14 @@
+import java.util.Arrays;
+import java.util.List;
+
 public class Yatzy {
 
   public static int chance(int dice1, int dice2, int dice3, int dice4, int dice5) {
     return dice1 + dice2 + dice3 + dice4 + dice5;
   }
 
-  public static int yatzy(int... dice) {
+  public static int yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    List<Integer> dice = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
     int[] counts = new int[6];
     for (int die : dice)
       counts[die - 1]++;
