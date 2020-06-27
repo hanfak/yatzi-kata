@@ -1,4 +1,6 @@
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -21,21 +23,18 @@ public class Yatzy {
   }
 
   public static int ones(int dice1, int dice2, int dice3, int dice4, int dice5) {
-    return Stream.of(dice1, dice2, dice3, dice4, dice5)
-            .filter(dieScore -> dieScore.equals(1))
-            .reduce(0, Integer::sum);
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+    return sumOfDieWithScore(1, diceScores);
   }
 
   public static int twos(int dice1, int dice2, int dice3, int dice4, int dice5) {
-    return Stream.of(dice1, dice2, dice3, dice4, dice5)
-            .filter(dieScore -> dieScore.equals(2))
-            .reduce(0, Integer::sum);
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+    return sumOfDieWithScore(2, diceScores);
   }
 
   public static int threes(int dice1, int dice2, int dice3, int dice4, int dice5) {
-    return Stream.of(dice1, dice2, dice3, dice4, dice5)
-            .filter(dieScore -> dieScore.equals(3))
-            .reduce(0, Integer::sum);
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+    return sumOfDieWithScore(3, diceScores);
   }
 
   protected int[] dice;
@@ -205,5 +204,11 @@ public class Yatzy {
       return _2_at * 2 + _3_at * 3;
     else
       return 0;
+  }
+
+  private static Integer sumOfDieWithScore(Integer score, List<Integer> diceScores) {
+    return diceScores.stream()
+            .filter(score::equals)
+            .reduce(0, Integer::sum);
   }
 }
