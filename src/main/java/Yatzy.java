@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
@@ -60,14 +61,13 @@ public class Yatzy {
   }
 
   public static int score_pair(int dice1, int dice2, int dice3, int dice4, int dice5) {
-
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
     Map<Integer, Long> countOfEachDieScore = diceScores.stream()
             .collect(groupingBy(identity(), counting()));
+    Predicate<Map.Entry<Integer, Long>> twoDiceWtihSameScore = x -> x.getValue().equals(2L);
     return  countOfEachDieScore.entrySet().stream()
-            .filter(x -> x.getValue().equals(2L))
-            .sorted((x1,x2) -> x2.getKey().compareTo(x1.getKey()))
-            .findFirst()
+            .filter(twoDiceWtihSameScore)
+            .max((x1, x2) -> x1.getKey().compareTo(x2.getKey()))
             .map(y -> y.getKey() * 2)
             .orElse(0);
   }
