@@ -1,5 +1,6 @@
-import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public class Yatzy {
 
@@ -8,13 +9,12 @@ public class Yatzy {
   }
 
   public static int yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
-    List<Integer> dice = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
-    int[] counts = new int[6];
-    for (int die : dice)
-      counts[die - 1]++;
-    for (int i = 0; i != 6; i++)
-      if (counts[i] == 5)
-        return 50;
+    List<Integer> dice = asList(dice1, dice2, dice3, dice4, dice5);
+
+    long numberOfDistinctDieScores = dice.stream().distinct().count();
+    if (numberOfDistinctDieScores == 1L) {
+      return 50;
+    }
     return 0;
   }
 
