@@ -1,9 +1,9 @@
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
@@ -59,19 +59,32 @@ public class Yatzy {
     return sumOfDieWithScore(6, diceScores);
   }
 
-  public static int score_pair(int d1, int d2, int d3, int d4, int d5) {
-    int[] counts = new int[6];
-    counts[d1 - 1]++;
-    counts[d2 - 1]++;
-    counts[d3 - 1]++;
-    counts[d4 - 1]++;
-    counts[d5 - 1]++;
-    int at;
-    for (at = 0; at != 6; at++)
-      if (counts[6 - at - 1] >= 2)
-        return (6 - at) * 2;
-    return 0;
+  public static int score_pair(int dice1, int dice2, int dice3, int dice4, int dice5) {
+
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+    Map<Integer, Long> groups = diceScores.stream()
+            .collect(groupingBy(identity(), counting()));
+
+
+    return groups.entrySet().stream()
+            .filter(x -> x.getValue().equals(2L))
+            .findFirst()
+            .map(y -> y.getKey() * 2)
+            .orElse(0);
   }
+
+
+//    int[] counts = new int[6];
+//    counts[d1 - 1]++;
+//    counts[d2 - 1]++;
+//    counts[d3 - 1]++;
+//    counts[d4 - 1]++;
+//    counts[d5 - 1]++;
+//    int at;
+//    for (at = 0; at != 6; at++)
+//      if (counts[6 - at - 1] >= 2)
+//        return (6 - at) * 2;
+//    return 0;
 
   public static int two_pair(int d1, int d2, int d3, int d4, int d5) {
     int[] counts = new int[6];
