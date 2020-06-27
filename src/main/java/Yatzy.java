@@ -1,7 +1,8 @@
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toCollection;
 
 // I am keeping the api of the methods the same, would use an interface but we have  static methods, avoids breaking backwards compatibility of existing users
 public class Yatzy {
@@ -11,8 +12,8 @@ public class Yatzy {
   }
 
   public static int yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
-    List<Integer> dice = asList(dice1, dice2, dice3, dice4, dice5);
-    HashSet<Integer> uniqueDice = new HashSet<>(dice);
+    Set<Integer> uniqueDice = Stream.of(dice1, dice2, dice3, dice4, dice5)
+            .collect(toCollection(HashSet::new));
     if (uniqueDice.size() == 1L) {
       return 50;
     }
