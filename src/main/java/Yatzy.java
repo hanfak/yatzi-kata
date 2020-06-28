@@ -70,7 +70,7 @@ public class Yatzy {
     return countOfEachDieScore.entrySet().stream()
             .filter(twoDiceWithSameScore)
             .max(dieScorePair)
-            .map(Yatzy::calculateTotalScore)
+            .map(dieScoreByCount -> calculateTotalScore(dieScoreByCount, 2))
             .orElse(0); // Not tested, no rules for this, this is assumption, but in prior code it returns 0
   }
 
@@ -108,18 +108,17 @@ public class Yatzy {
     return 0;
   }
 
-  public static int three_of_a_kind(int d1, int d2, int d3, int d4, int d5) {
-    int[] t;
-    t = new int[6];
-    t[d1 - 1]++;
-    t[d2 - 1]++;
-    t[d3 - 1]++;
-    t[d4 - 1]++;
-    t[d5 - 1]++;
-    for (int i = 0; i < 6; i++)
-      if (t[i] >= 3)
-        return (i + 1) * 3;
-    return 0;
+  public static int three_of_a_kind(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+    Map<Integer, Long> countOfEachDieScore = diceScores.stream()
+            .collect(groupingBy(identity(), counting()));
+    Predicate<Map.Entry<Integer, Long>> atLeastThreeDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(3L) >= 0;
+    Comparator<Map.Entry<Integer, Long>> dieScorePair = comparingByKey();
+    return countOfEachDieScore.entrySet().stream()
+            .filter(atLeastThreeDiceWithSameScore)
+            .max(dieScorePair) // not needed
+            .map(dieScoreByCount -> calculateTotalScore(dieScoreByCount, 3))
+            .orElse(0);
   }
 
   public static int smallStraight(int d1, int d2, int d3, int d4, int d5) {
@@ -196,7 +195,7 @@ public class Yatzy {
             .reduce(0, Integer::sum);
   }
 
-  private static int calculateTotalScore(Map.Entry<Integer, Long> dieScoreByCount) {
-    return dieScoreByCount.getKey() * 2;
+  private static int calculateTotalScore(Map.Entry<Integer, Long> dieScoreByCount, int multiplier) {
+    return dieScoreByCount.getKey() * multiplier;
   }
 }
