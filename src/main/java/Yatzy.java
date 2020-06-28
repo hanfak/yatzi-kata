@@ -103,23 +103,13 @@ public class Yatzy {
   public static int smallStraight(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
 
-    if (diceScores.stream().distinct().count() == 5L && !diceScores.contains(6)) {
-      return diceScores.stream()
-              .sorted()
-              .reduce(0, Integer::sum);
-    }
-    return 0;
+    return calculateScoreForStraight(diceScores, 6);
   }
 
   public static int largeStraight(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
 
-    if (diceScores.stream().distinct().count() == 5L && !diceScores.contains(1)) {
-      return diceScores.stream()
-              .sorted()
-              .reduce(0, Integer::sum);
-    }
-    return 0;
+    return calculateScoreForStraight(diceScores, 1);
   }
 
   public static int fullHouse(int d1, int d2, int d3, int d4, int d5) {
@@ -177,5 +167,12 @@ public class Yatzy {
   private static Set<Map.Entry<Integer, Long>> diceScorePerCount(List<Integer> diceScores) {
     return diceScores.stream()
             .collect(groupingBy(identity(), counting())).entrySet();
+  }
+
+  private static int calculateScoreForStraight(List<Integer> diceScores, int dieScoreNotToCount) {
+    if (diceScores.stream().distinct().count() < 5L && diceScores.contains(dieScoreNotToCount)) {
+      return 0;
+    }
+    return diceScores.stream().sorted().reduce(0, Integer::sum);
   }
 }
