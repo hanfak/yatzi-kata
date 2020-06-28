@@ -103,7 +103,7 @@ public class Yatzy {
   public static int smallStraight(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
 
-    if (diceScores.stream().distinct().count() == 5L) {
+    if (diceScores.stream().distinct().count() == 5L && !diceScores.contains(6)) {
       return diceScores.stream()
               .sorted()
               .reduce(0, Integer::sum);
