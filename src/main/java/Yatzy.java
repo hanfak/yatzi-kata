@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 import static java.util.Map.Entry.comparingByKey;
@@ -9,13 +10,13 @@ import static java.util.stream.Collectors.toList;
 
 // I am keeping the api of the methods the same, would use an interface but we have  static methods, avoids breaking backwards compatibility of existing users
 public class Yatzy {
-  // TODO Extra test to validate value passed in is between 1 and 6, to apply to all methods and constructor,
-  //  if had object used for param could hide this. use annotation?library?
+  // TODO extract out magic numbers
 
   private final List<Integer> diceScores;
 
+  // Should either use all static or all instance, but impl either one will break backward compatibility
   public Yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
-    this.diceScores = createDiceScores(dice1, dice2, dice3, dice4, dice5); //TODO Not great better do logic/validation in static factory method
+    this.diceScores = createDiceScores(dice1, dice2, dice3, dice4, dice5); // Not great better do logic/validation in static factory method
   }
 
   public static int chance(int dice1, int dice2, int dice3, int dice4, int dice5) {
@@ -52,36 +53,35 @@ public class Yatzy {
   }
 
   // TODO different way
-  public static int score_pair(int dice1, int dice2, int dice3, int dice4, int dice5) {
+  public static int scorePair(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = createDiceScores(dice1, dice2, dice3, dice4, dice5);
-    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = hasAtLeastNDiceScoresTheSame(2L);
-    Comparator<Map.Entry<Integer, Long>> dieScorePair = comparingByKey();
+    Predicate<Entry<Integer, Long>> twoDiceWithSameScore = hasAtLeastNDiceScoresTheSame(2L);
+    Comparator<Entry<Integer, Long>> dieScorePair = comparingByKey();
 
     return calculateSinglePairYatzyScore(diceScores, twoDiceWithSameScore, dieScorePair, 2);
   }
 
-  public static int four_of_a_kind(int dice1, int dice2, int dice3, int dice4, int dice5) {
+  public static int fourOfAKind(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = createDiceScores(dice1, dice2, dice3, dice4, dice5);
-    Predicate<Map.Entry<Integer, Long>> atLeastFourDiceWithSameScore = hasAtLeastNDiceScoresTheSame(4L);
-    Comparator<Map.Entry<Integer, Long>> dieScorePair = (a1, a2) -> 0;
+    Predicate<Entry<Integer, Long>> atLeastFourDiceWithSameScore = hasAtLeastNDiceScoresTheSame(4L);
+    Comparator<Entry<Integer, Long>> dieScorePair = (a1, a2) -> 0;
 
     return calculateSinglePairYatzyScore(diceScores, atLeastFourDiceWithSameScore, dieScorePair, 4);
   }
 
-  public static int three_of_a_kind(int dice1, int dice2, int dice3, int dice4, int dice5) {
+  public static int threeOfAKind(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = createDiceScores(dice1, dice2, dice3, dice4, dice5);
-    Predicate<Map.Entry<Integer, Long>> atLeastThreeDiceWithSameScore = hasAtLeastNDiceScoresTheSame(3L);
-    Comparator<Map.Entry<Integer, Long>> dieScorePair = (a1, a2) -> 0; // equivalent to empty comparator
+    Predicate<Entry<Integer, Long>> atLeastThreeDiceWithSameScore = hasAtLeastNDiceScoresTheSame(3L);
+    Comparator<Entry<Integer, Long>> dieScorePair = (a1, a2) -> 0; // equivalent to empty comparator
 
     return calculateSinglePairYatzyScore(diceScores, atLeastThreeDiceWithSameScore, dieScorePair, 3);
   }
 
-  // TODO: better way??
-
-  public static int two_pair(int dice1, int dice2, int dice3, int dice4, int dice5) {
+  // TODO: better way?? similar to full house
+  public static int twoPair(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = createDiceScores(dice1, dice2, dice3, dice4, dice5);
 
-    List<Map.Entry<Integer, Long>> applicableDiceScore = diceScorePerCount(diceScores).stream()
+    List<Entry<Integer, Long>> applicableDiceScore = diceScorePerCount(diceScores).stream()
             .filter(hasAtLeastNDiceScoresTheSame(2L))
             .collect(toList());
 
@@ -94,21 +94,19 @@ public class Yatzy {
   }
 
   public static int smallStraight(int dice1, int dice2, int dice3, int dice4, int dice5) {
-
     return calculateScoreForStraight(createDiceScores(dice1, dice2, dice3, dice4, dice5), 1);
   }
 
   public static int largeStraight(int dice1, int dice2, int dice3, int dice4, int dice5) {
-
     return calculateScoreForStraight(createDiceScores(dice1, dice2, dice3, dice4, dice5), 6);
   }
 
   // TODO simpilfy
   public static int fullHouse(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = createDiceScores(dice1, dice2, dice3, dice4, dice5);
-    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(2L) == 0;
-    Predicate<Map.Entry<Integer, Long>> atLeastThreeDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(3L) == 0;
-    Comparator<Map.Entry<Integer, Long>> dieScorePair = comparingByKey();
+    Predicate<Entry<Integer, Long>> twoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(2L) == 0;
+    Predicate<Entry<Integer, Long>> atLeastThreeDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(3L) == 0;
+    Comparator<Entry<Integer, Long>> dieScorePair = comparingByKey();
 
     int scoreForAPair = calculateSinglePairYatzyScore(diceScores, twoDiceWithSameScore, dieScorePair, 2);
     int scoreForAThreeOfAKind = calculateSinglePairYatzyScore(diceScores, atLeastThreeDiceWithSameScore, (a1, a2) -> 0, 3);
@@ -117,37 +115,6 @@ public class Yatzy {
       return 0;
     }
     return scoreForAPair + scoreForAThreeOfAKind;
-  }
-
-  private static Integer sumOfDieWithScore(Integer score, List<Integer> diceScores) {
-    return diceScores.stream()
-            .filter(score::equals)
-            .reduce(0, Integer::sum);
-  }
-
-  private static Predicate<Map.Entry<Integer, Long>> hasAtLeastNDiceScoresTheSame(long numberOfDices) {
-    return diceScoreCount -> diceScoreCount.getValue().compareTo(numberOfDices) >= 0;
-  }
-
-  private static int calculateSinglePairYatzyScore(List<Integer> diceScores, Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore, Comparator<Map.Entry<Integer, Long>> dieScoreToUse, int multiplier) {
-    return diceScorePerCount(diceScores).stream()
-            .filter(twoDiceWithSameScore)
-            .max(dieScoreToUse)
-            .map(dieScoreByCount -> dieScoreByCount.getKey() * multiplier) // Could use method ref, by doing mult after stream finished
-            .orElse(0);
-  }
-
-  private static Set<Map.Entry<Integer, Long>> diceScorePerCount(List<Integer> diceScores) {
-    return diceScores.stream()
-            .collect(groupingBy(identity(), counting())).entrySet();
-  }
-
-  private static int calculateScoreForStraight(List<Integer> diceScores, int dieScoreToCount) {
-    boolean notAStraight = diceScores.stream().distinct().count() == 5L;
-    if (notAStraight && diceScores.contains(dieScoreToCount)) {
-      return diceScores.stream().sorted().reduce(0, Integer::sum);
-    }
-    return 0;
   }
 
   private static List<Integer> createDiceScores(int dice1, int dice2, int dice3, int dice4, int dice5) {
@@ -159,5 +126,36 @@ public class Yatzy {
       throw new IllegalArgumentException("Dice score must be between 1 and 6 inclusive");
     }
     return diceScores;
+  }
+
+  private static Integer sumOfDieWithScore(Integer score, List<Integer> diceScores) {
+    return diceScores.stream()
+            .filter(score::equals)
+            .reduce(0, Integer::sum);
+  }
+
+  private static Predicate<Entry<Integer, Long>> hasAtLeastNDiceScoresTheSame(long numberOfDices) {
+    return diceScoreCount -> diceScoreCount.getValue().compareTo(numberOfDices) >= 0;
+  }
+
+  private static int calculateSinglePairYatzyScore(List<Integer> diceScores, Predicate<Entry<Integer, Long>> twoDiceWithSameScore, Comparator<Entry<Integer, Long>> dieScoreToUse, int multiplier) {
+    return diceScorePerCount(diceScores).stream()
+            .filter(twoDiceWithSameScore)
+            .max(dieScoreToUse)
+            .map(dieScoreByCount -> dieScoreByCount.getKey() * multiplier) // Could use method ref, by doing mult after stream finished
+            .orElse(0);
+  }
+
+  private static Set<Entry<Integer, Long>> diceScorePerCount(List<Integer> diceScores) {
+    return diceScores.stream()
+            .collect(groupingBy(identity(), counting())).entrySet();
+  }
+
+  private static int calculateScoreForStraight(List<Integer> diceScores, int dieScoreToCount) {
+    boolean notAStraight = diceScores.stream().distinct().count() == 5L;
+    if (notAStraight && diceScores.contains(dieScoreToCount)) {
+      return diceScores.stream().sorted().reduce(0, Integer::sum);
+    }
+    return 0;
   }
 }

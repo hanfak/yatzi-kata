@@ -83,45 +83,45 @@ public class YatzyTest {
 
   @Test
   public void mulitpleSinglePairsShouldScoreSumOfHighestPair() {
-    assertThatThrownBy(() -> Yatzy.score_pair(4, 41, 4, 5, 54))
+    assertThatThrownBy(() -> Yatzy.scorePair(4, 41, 4, 5, 54))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
-    assertEquals(6, Yatzy.score_pair(3, 4, 3, 5, 6));
-    assertEquals(10, Yatzy.score_pair(5, 3, 3, 3, 5));
-    assertEquals(12, Yatzy.score_pair(5, 3, 6, 6, 5));
-    assertEquals(0, Yatzy.score_pair(5, 3, 2, 6, 1));
+    assertEquals(6, Yatzy.scorePair(3, 4, 3, 5, 6));
+    assertEquals(10, Yatzy.scorePair(5, 3, 3, 3, 5));
+    assertEquals(12, Yatzy.scorePair(5, 3, 6, 6, 5));
+    assertEquals(0, Yatzy.scorePair(5, 3, 2, 6, 1));
   }
 
   @Test
   public void aThreeOfAKindShouldScoreSumOfThreeOfAKind() {
-    assertThatThrownBy(() -> Yatzy.three_of_a_kind(0, 4, 4, 5, 4))
+    assertThatThrownBy(() -> Yatzy.threeOfAKind(0, 4, 4, 5, 4))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
-    assertEquals(9, Yatzy.three_of_a_kind(3, 3, 3, 4, 5));
-    assertEquals(15, Yatzy.three_of_a_kind(5, 3, 5, 4, 5));
-    assertEquals(9, Yatzy.three_of_a_kind(3, 3, 3, 3, 5));
+    assertEquals(9, Yatzy.threeOfAKind(3, 3, 3, 4, 5));
+    assertEquals(15, Yatzy.threeOfAKind(5, 3, 5, 4, 5));
+    assertEquals(9, Yatzy.threeOfAKind(3, 3, 3, 3, 5));
   }
 
   @Test
   public void aFourOfAKindShouldScoreSumOfFourOfAKind() {
-    assertThatThrownBy(() -> Yatzy.four_of_a_kind(0, 4, 4, 0, 4))
+    assertThatThrownBy(() -> Yatzy.fourOfAKind(0, 4, 4, 0, 4))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
-    assertEquals(12, Yatzy.four_of_a_kind(3, 3, 3, 3, 5));
-    assertEquals(20, Yatzy.four_of_a_kind(5, 5, 5, 4, 5));
-    assertEquals(9, Yatzy.three_of_a_kind(3, 3, 3, 3, 3));
+    assertEquals(12, Yatzy.fourOfAKind(3, 3, 3, 3, 5));
+    assertEquals(20, Yatzy.fourOfAKind(5, 5, 5, 4, 5));
+    assertEquals(9, Yatzy.threeOfAKind(3, 3, 3, 3, 3));
   }
 
   @Test
   public void aTwoPairShouldScoreSumOfTwoPair() {
-    assertThatThrownBy(() -> Yatzy.two_pair(0, 0, 0, 0, 0))
+    assertThatThrownBy(() -> Yatzy.twoPair(0, 0, 0, 0, 0))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
-    assertEquals(16, Yatzy.two_pair(3, 3, 5, 4, 5));
-    assertEquals(16, Yatzy.two_pair(3, 3, 5, 5, 5));
-    assertEquals(0, Yatzy.two_pair(3, 1, 5, 2, 5));
-    assertEquals(0, Yatzy.two_pair(3, 1, 5, 5, 5));
-    assertEquals(0, Yatzy.two_pair(3, 1, 4, 2, 5));
+    assertEquals(16, Yatzy.twoPair(3, 3, 5, 4, 5));
+    assertEquals(16, Yatzy.twoPair(3, 3, 5, 5, 5));
+    assertEquals(0, Yatzy.twoPair(3, 1, 5, 2, 5));
+    assertEquals(0, Yatzy.twoPair(3, 1, 5, 5, 5));
+    assertEquals(0, Yatzy.twoPair(3, 1, 4, 2, 5));
 //    assertEquals(20, Yatzy.two_pair(5, 1, 5, 5, 5)); // Is this rule applicable?? depends
   }
 
