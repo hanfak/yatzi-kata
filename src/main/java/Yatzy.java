@@ -104,47 +104,29 @@ public class Yatzy {
   public static int smallStraight(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
 
-    return calculateScoreForStraight(diceScores, 6);
+    return calculateScoreForStraight(diceScores, 1);
   }
 
   public static int largeStraight(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
 
-    return calculateScoreForStraight(diceScores, 1);
+    return calculateScoreForStraight(diceScores, 6);
   }
 
-  public static int fullHouse(int d1, int d2, int d3, int d4, int d5) {
-    int[] tallies;
-    boolean _2 = false;
-    int i;
-    int _2_at = 0;
-    boolean _3 = false;
-    int _3_at = 0;
+  // TODO simpilfy
+  public static int fullHouse(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(2L) == 0;
+    Predicate<Map.Entry<Integer, Long>> atLeastThreeDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(3L) == 0;
+    Comparator<Map.Entry<Integer, Long>> dieScorePair = comparingByKey();
 
+    int scoreForAPair = calculateSinglePairYatzyScore(diceScores, twoDiceWithSameScore, dieScorePair, 2);
+    int scoreForAThreeOfAKind = calculateSinglePairYatzyScore(diceScores, atLeastThreeDiceWithSameScore, (a1, a2) -> 0, 3);
 
-    tallies = new int[6];
-    tallies[d1 - 1] += 1;
-    tallies[d2 - 1] += 1;
-    tallies[d3 - 1] += 1;
-    tallies[d4 - 1] += 1;
-    tallies[d5 - 1] += 1;
-
-    for (i = 0; i != 6; i += 1)
-      if (tallies[i] == 2) {
-        _2 = true;
-        _2_at = i + 1;
-      }
-
-    for (i = 0; i != 6; i += 1)
-      if (tallies[i] == 3) {
-        _3 = true;
-        _3_at = i + 1;
-      }
-
-    if (_2 && _3)
-      return _2_at * 2 + _3_at * 3;
-    else
+    if (scoreForAPair == 0 || scoreForAThreeOfAKind == 0) {
       return 0;
+    }
+    return scoreForAPair + scoreForAThreeOfAKind;
   }
 
   private static Integer sumOfDieWithScore(Integer score, List<Integer> diceScores) {
@@ -170,11 +152,11 @@ public class Yatzy {
             .collect(groupingBy(identity(), counting())).entrySet();
   }
 
-  private static int calculateScoreForStraight(List<Integer> diceScores, int dieScoreNotToCount) {
-    boolean notAStraight = diceScores.stream().distinct().count() < 5L;
-    if (notAStraight && diceScores.contains(dieScoreNotToCount)) {
-      return 0;
+  private static int calculateScoreForStraight(List<Integer> diceScores, int dieScoreToCount) {
+    boolean notAStraight = diceScores.stream().distinct().count()  == 5L;
+    if (notAStraight && diceScores.contains(dieScoreToCount)) {
+      return diceScores.stream().sorted().reduce(0, Integer::sum);
     }
-    return diceScores.stream().sorted().reduce(0, Integer::sum);
+    return 0;
   }
 }
