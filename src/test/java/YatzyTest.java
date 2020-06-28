@@ -6,13 +6,13 @@ import static org.junit.Assert.assertEquals;
 public class YatzyTest {
 
   @Test
-  public void chance_scores_sum_of_all_dice() {
+  public void chanceScoresSumOfAllDice() {
     assertEquals(15, Yatzy.chance(2, 3, 4, 5, 1));
     assertEquals(16, Yatzy.chance(3, 3, 4, 5, 1));
   }
 
   @Test
-  public void yatzy_scores_50() {
+  public void yatzyScores50() {
     assertThatThrownBy(() -> Yatzy.yatzy(-1, 12, 0, 0, 0))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -22,7 +22,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void test_1s() {
+  public void multiple1sShouldScoreSomeOf1s() {
     assertThatThrownBy(() -> Yatzy.ones(15, 2, 3, 4, 5))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -34,7 +34,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void test_2s() {
+  public void multiple2sShouldScoreSomeOf2s() {
     assertThatThrownBy(() -> Yatzy.twos(1, 21, 3, 4, 5))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -43,7 +43,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void test_threes() {
+  public void multiple3sShouldScoreSomeOf3s() {
     assertThatThrownBy(() -> Yatzy.threes(1, 2, 33, 4, 5))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -52,7 +52,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void fours_test() {
+  public void multiple4sShouldScoreSomeOf4s() {
     assertThatThrownBy(() -> new Yatzy(4, 4, 4, 51, 5).fours())
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -62,7 +62,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void fives() {
+  public void multiple5sShouldScoreSomeOf5s() {
     assertThatThrownBy(() -> new Yatzy(4, 4, 4, 5, 54).fives())
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -72,7 +72,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void sixes_test() {
+  public void multiple6sShouldScoreSomeOf6s() {
     assertThatThrownBy(() -> new Yatzy(4, 41, 4, 5, 54).sixes())
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -82,7 +82,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void one_pair() {
+  public void mulitpleSinglePairsShouldScoreSumOfHighestPair() {
     assertThatThrownBy(() -> Yatzy.score_pair(4, 41, 4, 5, 54))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -93,7 +93,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void three_of_a_kind() {
+  public void aThreeOfAKindShouldScoreSumOfThreeOfAKind() {
     assertThatThrownBy(() -> Yatzy.three_of_a_kind(0, 4, 4, 5, 4))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -103,7 +103,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void four_of_a_knd() {
+  public void aFourOfAKindShouldScoreSumOfFourOfAKind() {
     assertThatThrownBy(() -> Yatzy.four_of_a_kind(0, 4, 4, 0, 4))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -113,7 +113,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void two_Pair() {
+  public void aTwoPairShouldScoreSumOfTwoPair() {
     assertThatThrownBy(() -> Yatzy.two_pair(0, 0, 0, 0, 0))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -126,7 +126,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void smallStraight() {
+  public void aSmallStraightShouldScoreSumOfAllCards() {
     assertThatThrownBy(() -> Yatzy.smallStraight(10, 10, 10, 10, 10))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -137,7 +137,7 @@ public class YatzyTest {
   }
 
   @Test
-  public void largeStraight() {
+  public void aLargeStraightShouldScoreSumOfAllCards() {
     assertThatThrownBy(() -> Yatzy.largeStraight(0, 10, 0, 50, 0))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
@@ -149,11 +149,12 @@ public class YatzyTest {
   }
 
   @Test
-  public void fullHouse() {
+  public void aFullHouseShouldScoreTheSumOfAllCards() {
    assertThatThrownBy(() -> Yatzy.fullHouse(0, 0, 0, 0, 0))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Dice score must be between 1 and 6 inclusive");
     assertEquals(18, Yatzy.fullHouse(6, 2, 2, 2, 6));
+    assertEquals(22, Yatzy.fullHouse(6, 6, 2, 2, 6));
     assertEquals(0, Yatzy.fullHouse(2, 3, 4, 5, 6));
     assertEquals(0, Yatzy.fullHouse(6, 6, 1, 2, 6));
     assertEquals(0, Yatzy.fullHouse(1, 2, 3, 4, 5));
