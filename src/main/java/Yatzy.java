@@ -72,10 +72,10 @@ public class Yatzy {
 
   public static int four_of_a_kind(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
-    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = hasAtLeastNDiceScoresTheSame(4L);
+    Predicate<Map.Entry<Integer, Long>> atLeastFourDiceWithSameScore = hasAtLeastNDiceScoresTheSame(4L);
     Comparator<Map.Entry<Integer, Long>> dieScorePair = (a1, a2) -> 0;
 
-    return calculateSinglePairYatzyScore(diceScores, twoDiceWithSameScore, dieScorePair, 4);
+    return calculateSinglePairYatzyScore(diceScores, atLeastFourDiceWithSameScore, dieScorePair, 4);
   }
 
   public static int three_of_a_kind(int dice1, int dice2, int dice3, int dice4, int dice5) {
@@ -86,24 +86,15 @@ public class Yatzy {
     return calculateSinglePairYatzyScore(diceScores, atLeastThreeDiceWithSameScore, dieScorePair, 3);
   }
 
-  public static int two_pair(int d1, int d2, int d3, int d4, int d5) {
-    int[] counts = new int[6];
-    counts[d1 - 1]++;
-    counts[d2 - 1]++;
-    counts[d3 - 1]++;
-    counts[d4 - 1]++;
-    counts[d5 - 1]++;
-    int n = 0;
-    int score = 0;
-    for (int i = 0; i < 6; i += 1)
-      if (counts[6 - i - 1] >= 2) {
-        n++;
-        score += (6 - i);
-      }
-    if (n == 2)
-      return score * 2;
-    else
-      return 0;
+  public static int two_pair(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+    Map<Integer, Long> countOfEachDieScore = diceScores.stream()
+            .collect(groupingBy(identity(), counting()));
+    Predicate<Map.Entry<Integer, Long>> atLeastTwoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(2L) >= 0;
+    return countOfEachDieScore.entrySet().stream()
+            .filter(atLeastTwoDiceWithSameScore)
+            .map(dieScoreByCount -> dieScoreByCount.getKey() * 2)
+            .reduce(0, Integer::sum);
   }
 
   public static int smallStraight(int d1, int d2, int d3, int d4, int d5) {
@@ -190,11 +181,8 @@ public class Yatzy {
     return countOfEachDieScore.entrySet().stream()
             .filter(twoDiceWithSameScore)
             .max(dieScoreToUse)
-            .map(dieScoreByCount -> calculateTotalScore(dieScoreByCount, multiplier)) // Could use method ref, by doing mult after stream finished
+            .map(dieScoreByCount -> dieScoreByCount.getKey() * multiplier) // Could use method ref, by doing mult after stream finished
             .orElse(0); // Not tested, no rules for this, this is assumption, but in prior code it returns 0
   }
 
-  private static int calculateTotalScore(Map.Entry<Integer, Long> dieScoreByCount, int multiplier) {
-    return dieScoreByCount.getKey() * multiplier;
-  }
 }
