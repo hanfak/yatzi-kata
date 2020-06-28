@@ -88,11 +88,15 @@ public class Yatzy {
 
   public static int two_pair(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
-    Map<Integer, Long> countOfEachDieScore = diceScores.stream()
-            .collect(groupingBy(identity(), counting()));
-    Predicate<Map.Entry<Integer, Long>> atLeastTwoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(2L) >= 0;
-    return countOfEachDieScore.entrySet().stream()
-            .filter(atLeastTwoDiceWithSameScore)
+
+    List<Map.Entry<Integer, Long>> applicableDiceScore = diceScorePerCount(diceScores).stream()
+            .filter(hasAtLeastNDiceScoresTheSame(2L))
+            .collect(toList());
+
+    if (applicableDiceScore.size() < 2) { // Can one line it but good to be consistent with formatting
+      return 0;
+    }
+    return applicableDiceScore.stream()
             .map(dieScoreByCount -> dieScoreByCount.getKey() * 2)
             .reduce(0, Integer::sum);
   }
@@ -171,18 +175,20 @@ public class Yatzy {
             .reduce(0, Integer::sum);
   }
 
-  private static Predicate<Map.Entry<Integer, Long>> hasAtLeastNDiceScoresTheSame(long l) {
-    return diceScoreCount -> diceScoreCount.getValue().compareTo(l) >= 0;
+  private static Predicate<Map.Entry<Integer, Long>> hasAtLeastNDiceScoresTheSame(long numberOfDices) {
+    return diceScoreCount -> diceScoreCount.getValue().compareTo(numberOfDices) >= 0;
   }
 
   private static int calculateSinglePairYatzyScore(List<Integer> diceScores, Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore, Comparator<Map.Entry<Integer, Long>> dieScoreToUse, int multiplier) {
-    Map<Integer, Long> countOfEachDieScore = diceScores.stream()
-            .collect(groupingBy(identity(), counting()));
-    return countOfEachDieScore.entrySet().stream()
+    return diceScorePerCount(diceScores).stream()
             .filter(twoDiceWithSameScore)
             .max(dieScoreToUse)
             .map(dieScoreByCount -> dieScoreByCount.getKey() * multiplier) // Could use method ref, by doing mult after stream finished
-            .orElse(0); // Not tested, no rules for this, this is assumption, but in prior code it returns 0
+            .orElse(0);
   }
 
+  private static Set<Map.Entry<Integer, Long>> diceScorePerCount(List<Integer> diceScores) {
+    return diceScores.stream()
+            .collect(groupingBy(identity(), counting())).entrySet();
+  }
 }

@@ -86,6 +86,8 @@ public class YatzyTest {
     assertEquals(16, Yatzy.two_pair(3, 3, 5, 5, 5));
     assertEquals(0, Yatzy.two_pair(3, 1, 5, 2, 5));
     assertEquals(0, Yatzy.two_pair(3, 1, 5, 5, 5));
+    assertEquals(0, Yatzy.two_pair(3, 1, 4, 2, 5));
+//    assertEquals(20, Yatzy.two_pair(5, 1, 5, 5, 5)); // Is this rule applicable?? depends
   }
 
   @Test
