@@ -85,6 +85,7 @@ public class Yatzy {
     return calculateSinglePairYatzyScore(diceScores, atLeastThreeDiceWithSameScore, dieScorePair, 3);
   }
 
+  // TODO: better way??
   public static int two_pair(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
 
