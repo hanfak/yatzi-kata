@@ -61,17 +61,29 @@ public class Yatzy {
     return sumOfDieWithScore(6, diceScores);
   }
 
+  // TODO different way
   public static int score_pair(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
-    Map<Integer, Long> countOfEachDieScore = diceScores.stream()
-            .collect(groupingBy(identity(), counting()));
-    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(2L) == 0;
+    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = hasAtLeastNDiceScoresTheSame(2L);
     Comparator<Map.Entry<Integer, Long>> dieScorePair = comparingByKey();
-    return countOfEachDieScore.entrySet().stream()
-            .filter(twoDiceWithSameScore)
-            .max(dieScorePair)
-            .map(dieScoreByCount -> calculateTotalScore(dieScoreByCount, 2)) // Could use method ref, by doing mult after stream finished
-            .orElse(0); // Not tested, no rules for this, this is assumption, but in prior code it returns 0
+
+    return calculateSinglePairYatzyScore(diceScores, twoDiceWithSameScore, dieScorePair, 2);
+  }
+
+  public static int four_of_a_kind(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = hasAtLeastNDiceScoresTheSame(4L);
+    Comparator<Map.Entry<Integer, Long>> dieScorePair = (a1, a2) -> 0;
+
+    return calculateSinglePairYatzyScore(diceScores, twoDiceWithSameScore, dieScorePair, 4);
+  }
+
+  public static int three_of_a_kind(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+    Predicate<Map.Entry<Integer, Long>> atLeastThreeDiceWithSameScore = hasAtLeastNDiceScoresTheSame(3L);
+    Comparator<Map.Entry<Integer, Long>> dieScorePair = (a1, a2) -> 0; // equivalent to empty comparator
+
+    return calculateSinglePairYatzyScore(diceScores, atLeastThreeDiceWithSameScore, dieScorePair, 3);
   }
 
   public static int two_pair(int d1, int d2, int d3, int d4, int d5) {
@@ -92,34 +104,6 @@ public class Yatzy {
       return score * 2;
     else
       return 0;
-  }
-
-  public static int four_of_a_kind(int _1, int _2, int d3, int d4, int d5) {
-    int[] tallies;
-    tallies = new int[6];
-    tallies[_1 - 1]++;
-    tallies[_2 - 1]++;
-    tallies[d3 - 1]++;
-    tallies[d4 - 1]++;
-    tallies[d5 - 1]++;
-    for (int i = 0; i < 6; i++)
-      if (tallies[i] >= 4)
-        return (i + 1) * 4;
-    return 0;
-  }
-
-  public static int three_of_a_kind(int dice1, int dice2, int dice3, int dice4, int dice5) {
-    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
-    Map<Integer, Long> countOfEachDieScore = diceScores.stream()
-            .collect(groupingBy(identity(), counting()));
-    Predicate<Map.Entry<Integer, Long>> atLeastThreeDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(3L) >= 0;
-    Comparator<Map.Entry<Integer, Long>> dieScorePair = (a1, a2) -> 0; // equivalent to empty comparator
-//    Comparator<Map.Entry<Integer, Long>> dieScorePair = Comparator.nullsFirst(null); // equivalent to empty comparator alternative
-    return countOfEachDieScore.entrySet().stream()
-            .filter(atLeastThreeDiceWithSameScore)
-            .max(dieScorePair)
-            .map(dieScoreByCount -> calculateTotalScore(dieScoreByCount, 3))
-            .orElse(0);
   }
 
   public static int smallStraight(int d1, int d2, int d3, int d4, int d5) {
@@ -194,6 +178,20 @@ public class Yatzy {
     return diceScores.stream()
             .filter(score::equals)
             .reduce(0, Integer::sum);
+  }
+
+  private static Predicate<Map.Entry<Integer, Long>> hasAtLeastNDiceScoresTheSame(long l) {
+    return diceScoreCount -> diceScoreCount.getValue().compareTo(l) >= 0;
+  }
+
+  private static int calculateSinglePairYatzyScore(List<Integer> diceScores, Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore, Comparator<Map.Entry<Integer, Long>> dieScoreToUse, int multiplier) {
+    Map<Integer, Long> countOfEachDieScore = diceScores.stream()
+            .collect(groupingBy(identity(), counting()));
+    return countOfEachDieScore.entrySet().stream()
+            .filter(twoDiceWithSameScore)
+            .max(dieScoreToUse)
+            .map(dieScoreByCount -> calculateTotalScore(dieScoreByCount, multiplier)) // Could use method ref, by doing mult after stream finished
+            .orElse(0); // Not tested, no rules for this, this is assumption, but in prior code it returns 0
   }
 
   private static int calculateTotalScore(Map.Entry<Integer, Long> dieScoreByCount, int multiplier) {
