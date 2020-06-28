@@ -11,11 +11,13 @@ import static java.util.stream.Collectors.toList;
 
 // I am keeping the api of the methods the same, would use an interface but we have  static methods, avoids breaking backwards compatibility of existing users
 public class Yatzy {
+  // TODO Extra test to validate value passed in is between 1 and 6, to apply to all methods and constructor,
+  //  if had object used for param could hide this. use annotation?library?
 
-  private final int[] diceScorces;
+  private final int[] diceScores;
 
   public Yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
-    this.diceScorces = new int[]{dice1, dice2, dice3, dice4, dice5};
+    this.diceScores = new int[]{dice1, dice2, dice3, dice4, dice5};
   }
 
   public static int chance(int dice1, int dice2, int dice3, int dice4, int dice5) {
@@ -25,10 +27,7 @@ public class Yatzy {
   public static int yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
     Set<Integer> uniqueDice = Stream.of(dice1, dice2, dice3, dice4, dice5)
             .collect(toCollection(HashSet::new));
-    if (uniqueDice.size() == 1L) {
-      return 50;
-    }
-    return 0;
+    return uniqueDice.size() == 1L ? 50 :0;
   }
 
   public static int ones(int dice1, int dice2, int dice3, int dice4, int dice5) {
@@ -47,17 +46,17 @@ public class Yatzy {
   }
 
   public int fours() {
-    List<Integer> diceScores = Arrays.stream(this.diceScorces).boxed().collect(toList());
+    List<Integer> diceScores = Arrays.stream(this.diceScores).boxed().collect(toList());
     return sumOfDieWithScore(4, diceScores);
   }
 
   public int fives() {
-    List<Integer> diceScores = Arrays.stream(this.diceScorces).boxed().collect(toList());
+    List<Integer> diceScores = Arrays.stream(this.diceScores).boxed().collect(toList());
     return sumOfDieWithScore(5, diceScores);
   }
 
   public int sixes() {
-    List<Integer> diceScores = Arrays.stream(this.diceScorces).boxed().collect(toList());
+    List<Integer> diceScores = Arrays.stream(this.diceScores).boxed().collect(toList());
     return sumOfDieWithScore(6, diceScores);
   }
 
