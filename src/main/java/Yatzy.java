@@ -100,20 +100,14 @@ public class Yatzy {
             .reduce(0, Integer::sum);
   }
 
-  public static int smallStraight(int d1, int d2, int d3, int d4, int d5) {
-    int[] tallies;
-    tallies = new int[6];
-    tallies[d1 - 1] += 1;
-    tallies[d2 - 1] += 1;
-    tallies[d3 - 1] += 1;
-    tallies[d4 - 1] += 1;
-    tallies[d5 - 1] += 1;
-    if (tallies[0] == 1 &&
-            tallies[1] == 1 &&
-            tallies[2] == 1 &&
-            tallies[3] == 1 &&
-            tallies[4] == 1)
-      return 15;
+  public static int smallStraight(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
+
+    if (diceScores.stream().distinct().count() == 5L) {
+      return diceScores.stream()
+              .sorted()
+              .reduce(0, Integer::sum);
+    }
     return 0;
   }
 
