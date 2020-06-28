@@ -65,12 +65,12 @@ public class Yatzy {
     List<Integer> diceScores = Arrays.asList(dice1, dice2, dice3, dice4, dice5);
     Map<Integer, Long> countOfEachDieScore = diceScores.stream()
             .collect(groupingBy(identity(), counting()));
-    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().equals(2L);
+    Predicate<Map.Entry<Integer, Long>> twoDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(2L) == 0;
     Comparator<Map.Entry<Integer, Long>> dieScorePair = comparingByKey();
     return countOfEachDieScore.entrySet().stream()
             .filter(twoDiceWithSameScore)
             .max(dieScorePair)
-            .map(dieScoreByCount -> calculateTotalScore(dieScoreByCount, 2))
+            .map(dieScoreByCount -> calculateTotalScore(dieScoreByCount, 2)) // Could use method ref, by doing mult after stream finished
             .orElse(0); // Not tested, no rules for this, this is assumption, but in prior code it returns 0
   }
 
@@ -113,10 +113,11 @@ public class Yatzy {
     Map<Integer, Long> countOfEachDieScore = diceScores.stream()
             .collect(groupingBy(identity(), counting()));
     Predicate<Map.Entry<Integer, Long>> atLeastThreeDiceWithSameScore = diceScoreCount -> diceScoreCount.getValue().compareTo(3L) >= 0;
-    Comparator<Map.Entry<Integer, Long>> dieScorePair = comparingByKey();
+    Comparator<Map.Entry<Integer, Long>> dieScorePair = (a1, a2) -> 0; // equivalent to empty comparator
+//    Comparator<Map.Entry<Integer, Long>> dieScorePair = Comparator.nullsFirst(null); // equivalent to empty comparator alternative
     return countOfEachDieScore.entrySet().stream()
             .filter(atLeastThreeDiceWithSameScore)
-            .max(dieScorePair) // not needed
+            .max(dieScorePair)
             .map(dieScoreByCount -> calculateTotalScore(dieScoreByCount, 3))
             .orElse(0);
   }
