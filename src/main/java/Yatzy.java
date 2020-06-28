@@ -170,7 +170,8 @@ public class Yatzy {
   }
 
   private static int calculateScoreForStraight(List<Integer> diceScores, int dieScoreNotToCount) {
-    if (diceScores.stream().distinct().count() < 5L && diceScores.contains(dieScoreNotToCount)) {
+    boolean notAStraight = diceScores.stream().distinct().count() < 5L;
+    if (notAStraight && diceScores.contains(dieScoreNotToCount)) {
       return 0;
     }
     return diceScores.stream().sorted().reduce(0, Integer::sum);
