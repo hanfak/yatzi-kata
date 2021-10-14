@@ -9,10 +9,13 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 // I am keeping the api of the methods the same, would use an interface but we have  static methods, avoids breaking backwards compatibility of existing users
+// TODO put back original method names
 public class Yatzy {
   // TODO extract out magic numbers
 
-  private final List<Integer> diceScores;
+  private final List<Integer> diceScores; // TODO should be set as emptyList
+  
+ // TODO: protected int[] dice; should be brought back, as could still be used due to protected, and just reference a copy of diceScores
 
   // Should either use all static or all instance, but impl either one will break backward compatibility
   public Yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
@@ -53,6 +56,7 @@ public class Yatzy {
   }
 
   // TODO different way
+  // TODO extrat lots of repetition betwee the next three methods
   public static int scorePair(int dice1, int dice2, int dice3, int dice4, int dice5) {
     List<Integer> diceScores = createDiceScores(dice1, dice2, dice3, dice4, dice5);
     Predicate<Entry<Integer, Long>> twoDiceWithSameScore = hasAtLeastNDiceScoresTheSame(2L);
